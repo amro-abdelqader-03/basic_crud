@@ -93,12 +93,25 @@ function login($email, $password)
     if (password_verify($password, $user['password'])) {
         
         session_start();
-        $_SESSION['username'] = $user['username'];
+        $_SESSION['userID'] = $user['id'];
         return true;
     }
 
     return false;
 }
 
+function getUsername($userID){
+    global $conn;
+    $sql = "SELECT username FROM users WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        return false;
+    }
+    if ($stmt->execute([$userID])) {
+        return $stmt->fetch()["username"];
+    }
+    return false;
+}
 
 ?>
