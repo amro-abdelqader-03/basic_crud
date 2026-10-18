@@ -26,3 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <button type="submit">Log out</button>
     </form>
 </div>
+
+<?php
+if(isAdmin($_SESSION['userID'])){
+    echo '<p> he is Admin </p>';
+} 
+?>

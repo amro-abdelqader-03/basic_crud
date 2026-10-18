@@ -114,4 +114,18 @@ function getUsername($userID){
     return false;
 }
 
+function isAdmin($userID){
+    global $conn;
+    $sql = "SELECT role FROM users WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        return false;
+    }
+    if ($stmt->execute([$userID])) {
+        return $stmt->fetch()["role"] == "admin";
+    }
+    return false;
+}
+
 ?>
