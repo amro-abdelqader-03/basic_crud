@@ -56,7 +56,7 @@ function registrer($username, $email, $password, $created_at)
     $sql = "INSERT INTO users (username, email, password, created_at) VALUES 
         (?,?,?,?)";
     $stmt = $conn->prepare($sql);
-    if($stmt) {
+    if ($stmt) {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         $check = $stmt->execute([$username, $email, $hashed_password, $created_at]);
         if ($check) {
@@ -73,7 +73,7 @@ function login($email, $password)
 {
     global $conn;
 
-    $sql = "SELECT username, password FROM users WHERE email = ?";
+    $sql = "SELECT id, username, password FROM users WHERE email = ?";
     $stmt = $conn->prepare($sql);
 
     if (!$stmt) {
@@ -91,7 +91,7 @@ function login($email, $password)
     }
 
     if (password_verify($password, $user['password'])) {
-        
+
         session_start();
         $_SESSION['userID'] = $user['id'];
         return true;
@@ -100,7 +100,8 @@ function login($email, $password)
     return false;
 }
 
-function getUsername($userID){
+function getUsername($userID)
+{
     global $conn;
     $sql = "SELECT username FROM users WHERE id = ?";
     $stmt = $conn->prepare($sql);
@@ -114,7 +115,8 @@ function getUsername($userID){
     return false;
 }
 
-function isAdmin($userID){
+function isAdmin($userID)
+{
     global $conn;
     $sql = "SELECT role FROM users WHERE id = ?";
     $stmt = $conn->prepare($sql);
@@ -128,4 +130,35 @@ function isAdmin($userID){
     return false;
 }
 
+function getUsers($userID)
+{
+    global $conn;
+    $sql = "SELECT id, username, email, role FROM users WHERE NOT id = ?";
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        echo "<p>Something wrong</p>";
+    }
+
+    if ($stmt->execute([$userID])) {
+        if ($stmt->rowCount() > 0) {
+            $users = $stmt->fetchAll();
+            echo "<table style='width:100%'>";
+            echo "<tr>";
+            echo "<th>#</th><th>Username</th><th>Email</th><th>Role</th>";
+            echo "</tr>";
+            foreach ($users as $user) {
+                echo "<tr>";
+                echo "<td>" . $user["id"] . "</td><td>" . $user["username"] . "</td><td>" . $user["email"] . "</td><td>" . $user["role"] . "</td>";
+                echo "</tr>";
+            }
+            echo "</table>";
+        } else{
+            echo "No users";
+        }
+    } else {
+        echo "<p>Something wrong</p>";
+    }
+
+}
 ?>
