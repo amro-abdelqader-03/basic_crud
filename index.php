@@ -9,7 +9,7 @@ if (!isset($_SESSION['userID'])) {
 }
 
 $username = getUsername($_SESSION['userID']);
-echo "<p> Welcome Back ! " .  ($username ? $username : "User")  . "</p>";
+echo "<p> Welcome Back ! " .  htmlspecialchars($username ? $username : "User")  . "</p>";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Unset all session variables

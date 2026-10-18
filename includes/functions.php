@@ -145,11 +145,17 @@ function getUsers($userID)
             $users = $stmt->fetchAll();
             echo "<table style='width:100%'>";
             echo "<tr>";
-            echo "<th>#</th><th>Username</th><th>Email</th><th>Role</th>";
+            echo "<th>#</th><th>Username</th><th>Email</th><th>Role</th><th>Action</th>";
             echo "</tr>";
             foreach ($users as $user) {
                 echo "<tr>";
-                echo "<td>" . $user["id"] . "</td><td>" . $user["username"] . "</td><td>" . $user["email"] . "</td><td>" . $user["role"] . "</td>";
+                echo "<td>" . htmlspecialchars($user["id"]) . "</td><td>" . htmlspecialchars($user["username"]) . "</td><td>" . htmlspecialchars($user["email"]) . "</td><td>" . htmlspecialchars($user["role"]) . "</td>";
+                echo "<td>";
+                echo "<form method='POST' action='edit.php' style='display:inline;'>";
+                echo "<button name='id' type='submit' value='".$user["id"]."'>edit</button>";
+                echo "</form><form method='POST' action='delete.php' style='display:inline;'>";
+                echo "<button name='id' type='submit' value='".$user["id"]."'>delete</button>";
+                echo "</form></td>";
                 echo "</tr>";
             }
             echo "</table>";
@@ -158,6 +164,34 @@ function getUsers($userID)
         }
     } else {
         echo "<p>Something wrong</p>";
+    }
+
+}
+
+function deleteUser( $userID )
+{
+    global $conn;
+    $sql = "DELETE FROM users WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        echo "<p>Something wrong</p>";
+    }
+    if ($stmt->execute([$userID])) {
+        header("location: index.php");
+        exit();
+    }
+}
+
+function editUser( $userID, $username, $email){
+    global $conn;
+    $sql = "UPDATE users SET username = ?, email = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        echo "<p>Something wrong</p>";
+    }
+    if ($stmt->execute([$username, $email, $userID])) {
+        header("location: index.php");
+        exit();
     }
 
 }
