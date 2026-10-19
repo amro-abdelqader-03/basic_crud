@@ -1,11 +1,12 @@
 <?php
-require_once("includes/config.php");
+require_once("includes/database.php");
+require_once("includes/auth.php");
 include("includes/functions.php");
 
 $error_message = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
+    $db = new Database();
     if (empty($_POST["username"])) {
         $error_message = "Username is required";
     } elseif (empty($_POST["email"])) {
@@ -16,9 +17,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $error_message = "Confirm password is required";
     } elseif ($_POST["conf-pass"] !== $_POST["password"]) {
         $error_message = "The passwords must match";
-    } elseif( !validateUsername($_POST["username"]) ) {
+    } elseif( !$db->validateUsername($_POST["username"]) ) {
         $error_message = "The username is already exist";
-    } elseif (!validateEmail(trim($_POST["email"]))) {
+    } elseif (!$db->validateEmail(trim($_POST["email"]))) {
         $error_message = "The email is already exist";
     }
 
@@ -30,7 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $password = $_POST["password"];
         $created_at = date("Y-m-d H:i:s");
 
-        registrer($username, $email, $password, $created_at);
+        $auth = new Auth();
+        $auth->registrer($username, $email, $password, $created_at);
     }
 }
 ?>

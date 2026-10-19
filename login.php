@@ -1,5 +1,5 @@
 <?php
-require_once("includes/config.php");
+require_once("includes/auth.php");
 include("includes/functions.php");
 $error_message = "";
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -14,8 +14,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     }else{
         $email = trim($_POST["email"]);
         $password = trim($_POST["password"]);
-
-        if(login($email, $password)){
+        $auth = new Auth();
+        if($auth->login($email, $password)){
             header("Location: index.php");
             exit();
         }

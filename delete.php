@@ -1,8 +1,14 @@
 <?php
-require_once("includes/config.php");
+require_once("includes/database.php");
 include("includes/functions.php");
 if(isset($_POST["id"])){
     $id = $_POST["id"];
-    deleteUser( $id);
+    $db = new Database();
+    if($db->deleteUser( $id)) {
+        header("location: index.php");
+        exit();
+    }else{
+        echo "<p>Something wrong</p>";
+    }
 }
 ?>

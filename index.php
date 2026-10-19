@@ -1,6 +1,6 @@
 <?php
 
-require_once("includes/config.php");
+require_once("includes/database.php");
 include("includes/functions.php");
 
 session_start();
@@ -8,7 +8,9 @@ if (!isset($_SESSION['userID'])) {
     header("location: login.php");
 }
 
-$username = getUsername($_SESSION['userID']);
+$db = new Database();
+
+$username = $db->getUsername($_SESSION['userID']);
 echo "<p> Welcome Back ! " .  htmlspecialchars($username ? $username : "User")  . "</p>";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -28,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </div>
 
 <?php
-if(isAdmin($_SESSION['userID'])){
-    getUsers($_SESSION['userID']);
+if($db->isAdmin($_SESSION['userID'])){
+    buildUsersTable($_SESSION['userID']);
 } 
 ?>

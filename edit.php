@@ -1,11 +1,17 @@
 <?php
-require_once("includes/config.php");
+require_once("includes/database.php");
 include("includes/functions.php");
 
 $id = $_POST["id"];
 
 if (isset($_POST["username"])) {
-    editUser( $id, $_POST["username"], $_POST["email"]);
+    $db = new Database();
+    if($db->editUser( $id, $_POST["username"], $_POST["email"])){
+        header("location: index.php");
+        exit();
+    }else{
+        echo "<p>Something wrong</p>";
+    }
 }
 ?>
 
